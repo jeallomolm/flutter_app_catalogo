@@ -3,7 +3,6 @@ import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 
 final PageController controller = PageController(initialPage: 0);
-List<Widget> pages = [RestaurantsList(), FavoritesList(), ProfileUser()];
 
 class MainScreen extends StatefulWidget {
   @override
@@ -25,7 +24,11 @@ class _MainScreenState extends State<MainScreen> {
           Expanded(
             child: PageView(
               controller: controller,
-              children: pages,
+              children: [
+                RestaurantList(refresh()),
+                FavoritesList(refresh()),
+                ProfileUser(),
+              ],
               physics: NeverScrollableScrollPhysics(),
             ),
           ),
@@ -116,5 +119,9 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     ));
+  }
+
+  refresh() {
+    setState(() {});
   }
 }
