@@ -38,7 +38,7 @@ class _TextFieldFormState extends State<TextFieldForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //getText(),
+          getText(),
           TextFormField(
             onChanged: (value) {
               setState(() {
@@ -83,7 +83,10 @@ class _TextFieldFormState extends State<TextFieldForm> {
         style: TextStyle(fontWeight: FontWeight.bold),
       );
     } else {
-      return Text("");
+      return Text(
+        "",
+        style: TextStyle(fontSize: 0.0),
+      );
     }
   }
 }
