@@ -3,15 +3,48 @@ import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 
-List<Widget> restaurantsFav = [];
-
 class FavoritesList extends StatefulWidget {
-  final Function notify;
-
   @override
   _FavoritesListState createState() => _FavoritesListState();
+}
 
-  FavoritesList(this.notify) {
+class _FavoritesListState extends State<FavoritesList> {
+  List<Widget> restaurantsFav = [];
+
+  _FavoritesListState() {
+    updateRestaurantsFav();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.only(top: 20.0),
+              child: Text(
+                "Favoritos",
+                style: TextStyles.bodyText
+                    .copyWith(fontWeight: FontWeight.bold, fontSize: 22.0),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: restaurantsFav,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  updateRestaurantsFav() {
     if (favsData.isEmpty) {
       restaurantsFav.clear();
       restaurantsFav.add(
@@ -40,40 +73,15 @@ class FavoritesList extends StatefulWidget {
       int i;
       restaurantsFav.clear();
       for (i = 0; i < favsData.length; i++) {
-        restaurantsFav.add(
-            RestaurantItem(favsData[i].name, favsData[i].image, i, notify));
+        restaurantsFav
+            .add(RestaurantItem(favsData[i].name, favsData[i].image, refresh));
       }
     }
   }
-}
 
-class _FavoritesListState extends State<FavoritesList> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.only(top: 20.0),
-              child: Text(
-                "Favoritos",
-                style: TextStyles.bodyText
-                    .copyWith(fontWeight: FontWeight.bold, fontSize: 22.0),
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Container(
-              child: Column(
-                children: restaurantsFav,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+  refresh() {
+    setState(() {
+      updateRestaurantsFav();
+    });
   }
 }

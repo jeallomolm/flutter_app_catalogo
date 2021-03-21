@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/data/restaurants.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 
-List<RestaurantItem> restaurantsFavs = [];
+List<RestaurantItem> restaurantsList = [];
 
 class RestaurantList extends StatefulWidget {
-  final Function notify;
-
   @override
   _RestaurantListState createState() => _RestaurantListState();
-  RestaurantList(this.notify) {
-    if (restaurantsFav.isEmpty) {
+  RestaurantList() {
+    if (restaurantsList.isEmpty) {
       int i;
       for (i = 0; i < restaurantsData.length; i++) {
-        restaurantsFavs.add(RestaurantItem(
-            restaurantsData[i].name, restaurantsData[i].image, i, notify));
+        restaurantsList.add(RestaurantItem(
+            restaurantsData[i].name, restaurantsData[i].image, () {}));
       }
     }
   }
@@ -50,7 +48,7 @@ class _RestaurantListState extends State<RestaurantList> {
           child: SingleChildScrollView(
             child: Container(
               child: Column(
-                children: restaurantsFavs,
+                children: restaurantsList,
               ),
             ),
           ),

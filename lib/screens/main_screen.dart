@@ -25,8 +25,8 @@ class _MainScreenState extends State<MainScreen> {
             child: PageView(
               controller: controller,
               children: [
-                RestaurantList(refresh()),
-                FavoritesList(refresh()),
+                RestaurantList(),
+                FavoritesList(),
                 ProfileUser(),
               ],
               physics: NeverScrollableScrollPhysics(),
@@ -119,9 +119,5 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     ));
-  }
-
-  refresh() {
-    setState(() {});
   }
 }

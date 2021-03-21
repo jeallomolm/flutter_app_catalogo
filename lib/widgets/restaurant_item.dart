@@ -3,12 +3,11 @@ import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/screens/restaurant_screen.dart';
 
 class RestaurantItem extends StatelessWidget {
-  final Function notify;
   final String name;
   final String image;
-  final int id;
+  final Function() refresh;
 
-  RestaurantItem(this.name, this.image, this.id, this.notify);
+  RestaurantItem(this.name, this.image, this.refresh);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,7 @@ class RestaurantItem extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => RestaurantScreen(id, notify)));
+                builder: (context) => RestaurantScreen(name, refresh, image)));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),

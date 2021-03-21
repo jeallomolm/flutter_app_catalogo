@@ -7,4 +7,5 @@ class TextStyles {
       TextStyle(color: Palette.principal, fontFamily: "Great", fontSize: 50.0);
   static const TextStyle RestaurantItemText = TextStyle(
       color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.0);
+  static const TextStyle infoText = TextStyle(fontSize: 18.0);
 }
