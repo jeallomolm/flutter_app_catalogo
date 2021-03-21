@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 
 class RestaurantItem extends StatelessWidget {
+  final String name;
+  final String image;
+
+  RestaurantItem(this.name, this.image);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,8 +23,7 @@ class RestaurantItem extends StatelessWidget {
               child: FittedBox(
                 fit: BoxFit.fill,
                 child: Image(
-                  image:
-                      AssetImage("images/restaurants/osaka_cocina_nikkei.png"),
+                  image: AssetImage("images/restaurants/" + image),
                 ),
               ),
             ),
@@ -29,8 +33,7 @@ class RestaurantItem extends StatelessWidget {
           height: (MediaQuery.of(context).size.height / 4.0) - 10.0,
           alignment: Alignment.bottomLeft,
           margin: EdgeInsets.only(left: 15.0),
-          child:
-              Text("Osaka Cocina Nikkei", style: TextStyles.RestaurantItemText),
+          child: Text(name, style: TextStyles.RestaurantItemText),
         ),
       ]),
     );

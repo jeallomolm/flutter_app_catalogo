@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
+import 'package:flutter_app_catalogo/data/restaurants.dart';
+import 'package:flutter_app_catalogo/models/restaurant.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
+
+List<RestaurantItem> restaurants = [];
 
 class RestaurantsList extends StatelessWidget {
   @override
@@ -32,19 +36,22 @@ class RestaurantsList extends StatelessWidget {
           child: SingleChildScrollView(
             child: Container(
               child: Column(
-                children: [
-                  RestaurantItem(),
-                  RestaurantItem(),
-                  RestaurantItem(),
-                  RestaurantItem(),
-                  RestaurantItem(),
-                  RestaurantItem(),
-                ],
+                children: restaurants,
               ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  RestaurantsList() {
+    if (restaurants.isEmpty) {
+      int i;
+      for (i = 0; i < restaurantsData.length; i++) {
+        restaurants.add(
+            RestaurantItem(restaurantsData[i].name, restaurantsData[i].image));
+      }
+    }
   }
 }
