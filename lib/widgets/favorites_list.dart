@@ -22,11 +22,11 @@ class _FavoritesListState extends State<FavoritesList> {
         Container(
           child: Center(
             child: Container(
-              margin: EdgeInsets.only(top: 20.0),
+              margin: EdgeInsets.only(top: 21.0),
               child: Text(
                 "Favoritos",
                 style: TextStyles.bodyText
-                    .copyWith(fontWeight: FontWeight.bold, fontSize: 22.0),
+                    .copyWith(fontWeight: FontWeight.bold, fontSize: 18.0),
               ),
             ),
           ),
@@ -54,16 +54,15 @@ class _FavoritesListState extends State<FavoritesList> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Aun no has agregado restaurants a esta sección",
+                "Sin favoritos.",
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18.0),
               ),
               SizedBox(
                 height: 5.0,
               ),
               Text(
-                "¿Qué esperas? Encuentra tu primer lugar favorito!!!",
-                style:
-                    TextStyles.bodyText.copyWith(fontStyle: FontStyle.italic),
+                "No hay restaurantes para mostrar.",
+                style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18.0),
               ),
             ],
           ),

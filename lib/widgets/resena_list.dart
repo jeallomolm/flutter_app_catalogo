@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/models/models.dart';
+import 'package:flutter_app_catalogo/screens/add_resena.dart';
 import 'package:flutter_app_catalogo/widgets/resena_item.dart';
 
 class ResenaList extends StatefulWidget {
@@ -36,7 +37,17 @@ class _ResenaListState extends State<ResenaList> {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddResena(
+                          id,
+                          restaurantsData[id].name,
+                          refresh,
+                          restaurantsData[id].image,
+                        )));
+          },
           child: Container(
             height: 60.0,
             decoration: BoxDecoration(
