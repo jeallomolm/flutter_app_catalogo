@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 
 class RestaurantsList extends StatelessWidget {
@@ -10,7 +11,12 @@ class RestaurantsList extends StatelessWidget {
           child: Column(
             children: [
               Center(
-                child: Text("GOURMET"),
+                child: Container(
+                  margin: EdgeInsets.only(top: 20.0),
+                  child: Text("GOURMET",
+                      style: TextStyle(
+                          fontSize: 30.0, fontWeight: FontWeight.bold)),
+                ),
               ),
               TextFieldForm(
                 icon: Icons.search,
@@ -25,9 +31,11 @@ class RestaurantsList extends StatelessWidget {
         Expanded(
           child: SingleChildScrollView(
             child: Container(
-              color: Colors.green,
               child: Column(
                 children: [
+                  RestaurantItem(),
+                  RestaurantItem(),
+                  RestaurantItem(),
                   RestaurantItem(),
                   RestaurantItem(),
                   RestaurantItem(),
