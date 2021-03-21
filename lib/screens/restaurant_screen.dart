@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/widgets/dialog.dart';
 import 'package:flutter_app_catalogo/widgets/info_restaurant.dart';
 import 'package:flutter_app_catalogo/widgets/resena_list.dart';
 
@@ -188,6 +189,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           onPressed: onPressedButton,
         );
         deleteRestaurant();
+        ShowDialog(context, "Favoritos",
+            "El restaurante ha sido eliminado de favoritos", "ACEPTAR");
       } else {
         fav = IconButton(
           icon: Icon(
@@ -197,6 +200,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           onPressed: onPressedButton,
         );
         addRestaurant();
+        ShowDialog(context, "Favoritos",
+            "El restaurante ha sido agregado a favoritos", "ACEPTAR");
       }
       refresh();
     });

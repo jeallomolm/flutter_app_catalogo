@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
-import 'package:flutter_app_catalogo/models/models.dart';
 import 'package:flutter_app_catalogo/screens/add_resena.dart';
 import 'package:flutter_app_catalogo/widgets/resena_item.dart';
 

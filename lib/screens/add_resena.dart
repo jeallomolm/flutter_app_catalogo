@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/models/models.dart';
-import 'package:flutter_app_catalogo/widgets/info_restaurant.dart';
-import 'package:flutter_app_catalogo/widgets/resena_list.dart';
 import 'package:flutter_app_catalogo/widgets/resena_textfield.dart';
 import 'package:flutter_app_catalogo/widgets/textFieldForm.dart';
 
@@ -34,7 +32,7 @@ class _AddResenaState extends State<AddResena> {
 
   final _formKey = GlobalKey<FormState>();
 
-  _AddResenaState(this.id, this.name, this.refresh, this.image) {}
+  _AddResenaState(this.id, this.name, this.refresh, this.image);
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +138,6 @@ class _AddResenaState extends State<AddResena> {
             if (_formKey.currentState.validate()) {
               resenasData.add(
                   Resena(id, resenaText, users[userID].name, calificacion));
-              print(resenaText);
               refresh();
               Navigator.pop(context);
             }
