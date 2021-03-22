@@ -1,54 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/widgets/dialog.dart';
 import 'package:flutter_app_catalogo/widgets/info_restaurant.dart';
 import 'package:flutter_app_catalogo/widgets/resena_list.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 final PageController controller = PageController(initialPage: 0);
 
 class RestaurantScreen extends StatefulWidget {
+  final String id;
+  final String horario;
   final String name;
+  final String direccion;
   final String image;
   final Function() refresh;
 
-  RestaurantScreen(this.name, this.refresh, this.image);
+  RestaurantScreen(this.id, this.horario, this.name, this.refresh, this.image,
+      this.direccion);
 
   @override
   _RestaurantScreenState createState() =>
-      _RestaurantScreenState(name, refresh, image);
+      _RestaurantScreenState(id, horario, name, refresh, image, direccion);
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
+  String id;
+  String horario;
   String image;
   String name;
+  String direccion;
   Function() refresh;
 
   IconButton fav;
   BorderSide borderSideInfo = BorderSide(color: Palette.principal, width: 2.0);
   BorderSide borderSideResenas = BorderSide.none;
-  int id;
 
-  _RestaurantScreenState(this.name, this.refresh, this.image) {
-    id = findId();
-
-    if (!isFav()) {
-      fav = IconButton(
-        icon: Icon(
-          Icons.favorite_border,
-          color: Palette.principal,
-        ),
-        onPressed: onPressedButton,
-      );
-    } else {
-      fav = IconButton(
-        icon: Icon(
-          Icons.favorite,
-          color: Palette.principal,
-        ),
-        onPressed: onPressedButton,
-      );
-    }
+  _RestaurantScreenState(this.id, this.horario, this.name, this.refresh,
+      this.image, this.direccion) {
+    fav = IconButton(
+      icon: Icon(
+        Icons.favorite_border,
+        color: Palette.principal,
+      ),
+      onPressed: onPressedButton,
+    );
+    isFav();
   }
 
   @override
@@ -153,8 +151,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 scrollDirection: Axis.vertical,
                 controller: controller,
                 children: [
-                  InfoRestaurant(id),
-                  ResenaList(id),
+                  /*InfoRestaurant(id),
+                  ResenaList(id),*/
                 ],
                 physics: NeverScrollableScrollPhysics(),
               ),
@@ -165,22 +163,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     ));
   }
 
-  bool isFav() {
-    int i;
-    bool fav = false;
+  onPressedButton() async {
+    bool isFav = await isFavorito();
 
-    for (i = 0; i < favsData.length; i++) {
-      if (favsData[i].name == name) {
-        fav = true;
-      }
-    }
-
-    return fav;
-  }
-
-  onPressedButton() {
     setState(() {
-      if (isFav()) {
+      if (isFav) {
         fav = IconButton(
           icon: Icon(
             Icons.favorite_border,
@@ -208,34 +195,82 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   }
 
   addRestaurant() {
-    int i;
-
-    for (i = 0; i < restaurantsData.length; i++) {
-      if (restaurantsData[i].name == name) {
-        favsData.add(restaurantsData[i]);
-      }
-    }
+    addFavorito();
   }
 
   deleteRestaurant() {
-    int i;
-
-    for (i = 0; i < favsData.length; i++) {
-      if (favsData[i].name == name) {
-        favsData.removeAt(i);
-      }
-    }
+    deleteFavorito();
   }
 
-  int findId() {
-    int i;
+  Future<void> addFavorito() async {
+    await Firebase.initializeApp();
 
-    for (i = 0; i < restaurantsData.length; i++) {
-      if (restaurantsData[i].name == name) {
-        return i;
+    Map<String, dynamic> favorito = {
+      "idUser": userIDa,
+      "idRestaurant": id,
+    };
+
+    References.favs.add(favorito);
+  }
+
+  Future<void> deleteFavorito() async {
+    await Firebase.initializeApp();
+
+    String delete;
+
+    await References.favs
+        .where("idUser", isEqualTo: userIDa)
+        .get()
+        .then((value) => {
+              value.docs.forEach((element) {
+                if (element.get("idRestaurant") == id) {
+                  delete = element.id;
+                }
+              })
+            });
+
+    References.favs.doc(delete).delete();
+  }
+
+  Future<bool> isFavorito() async {
+    await Firebase.initializeApp();
+
+    bool fav = false;
+
+    await References.favs
+        .where("idUser", isEqualTo: userIDa)
+        .get()
+        .then((value) => {
+              value.docs.forEach((element) {
+                if (element.get("idRestaurant") == id) {
+                  fav = true;
+                }
+              })
+            });
+
+    return fav;
+  }
+
+  void isFav() async {
+    bool isfav = await isFavorito();
+    setState(() {
+      if (!isfav) {
+        fav = IconButton(
+          icon: Icon(
+            Icons.favorite_border,
+            color: Palette.principal,
+          ),
+          onPressed: onPressedButton,
+        );
+      } else {
+        fav = IconButton(
+          icon: Icon(
+            Icons.favorite,
+            color: Palette.principal,
+          ),
+          onPressed: onPressedButton,
+        );
       }
-    }
-
-    return -1;
+    });
   }
 }

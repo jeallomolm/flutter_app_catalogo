@@ -215,7 +215,7 @@ class _EditProfileUserState extends State<AddRestaurant> {
       "direccion": direccion,
       "name": name,
       "horario": horario,
-      "image": "osaka_cocina_nikki.png",
+      "image": "osaka_cocina_nikkei.png",
     };
 
     References.restaurants.add(restaurant);

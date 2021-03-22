@@ -1,17 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/firebase/references.dart';
+import 'package:flutter_app_catalogo/models/models.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 final PageController controller = PageController(initialPage: 0);
 
 class MainScreen extends StatefulWidget {
   MainScreen(String idUser) {
     userIDa = idUser;
+    listarRestaurantes();
   }
 
   @override
   _MainScreenState createState() => _MainScreenState();
+
+  Future<void> listarRestaurantes() async {
+    await Firebase.initializeApp();
+
+    References.restaurants.get().then((value) => {
+          value.docs.forEach((element) {
+            restaurantsData.add(Restaurant(
+                element.data()["name"],
+                element.data()["horario"],
+                element.data()["direccion"],
+                element.id,
+                element.data()["image"]));
+          })
+        });
+  }
 }
 
 class _MainScreenState extends State<MainScreen> {
