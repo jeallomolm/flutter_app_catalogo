@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/models/models.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class AddRestaurant extends StatefulWidget {
   @override
@@ -18,7 +20,6 @@ class _EditProfileUserState extends State<AddRestaurant> {
 
   Color bgButton = Colors.transparent;
   TextStyle tsButton = TextStyles.bodyText;
-  bool disable = true;
 
   String name = "";
   String direccion = "";
@@ -69,6 +70,17 @@ class _EditProfileUserState extends State<AddRestaurant> {
                 height: 20.0,
               ),
               Form(
+                onChanged: () {
+                  setState(() {
+                    _key.currentState.validate()
+                        ? bgButton = Palette.principal
+                        : bgButton = Colors.transparent;
+                    _key.currentState.validate()
+                        ? tsButton =
+                            TextStyles.bodyText.copyWith(color: Colors.white)
+                        : tsButton = TextStyles.bodyText;
+                  });
+                },
                 key: _key,
                 child: Column(
                   children: [
@@ -78,7 +90,8 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       type: TextInputType.text,
                       obscureText: false,
                       hint: "Capitalino",
-                      onChanged: valName,
+                      onChanged: updateName,
+                      validator: valName,
                     ),
                     TextFieldForm(
                       icon: Icons.location_on_outlined,
@@ -86,7 +99,8 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       type: TextInputType.text,
                       obscureText: false,
                       hint: "Cra 5 #28 - 15",
-                      onChanged: valDireccion,
+                      onChanged: updateDireccion,
+                      validator: valDireccion,
                     ),
                     TextFieldForm(
                       icon: Icons.watch_later_outlined,
@@ -94,7 +108,8 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       type: TextInputType.text,
                       obscureText: false,
                       hint: "De lunes a viernes",
-                      onChanged: valHorario,
+                      onChanged: updateHorario,
+                      validator: valHorario,
                     ),
                   ],
                 ),
@@ -106,8 +121,7 @@ class _EditProfileUserState extends State<AddRestaurant> {
           onTap: () {
             setState(() {
               if (_key.currentState.validate()) {
-                restaurantsData.add(
-                    Restaurant(name, horario, direccion, 0.0, "cuzco.png"));
+                addRestaurant();
                 ShowDialog(
                     context,
                     "Agregar",
@@ -156,15 +170,54 @@ class _EditProfileUserState extends State<AddRestaurant> {
     }
   }
 
-  void valName(String value) {
+  //   UPDATES
+  void updateName(String value) {
     name = value;
   }
 
-  void valDireccion(String value) {
+  void updateDireccion(String value) {
     direccion = value;
   }
 
-  void valHorario(String value) {
+  void updateHorario(String value) {
     horario = value;
+  }
+
+  //   VALIDATORS
+  String valName(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else {
+      return null;
+    }
+  }
+
+  String valDireccion(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else {
+      return null;
+    }
+  }
+
+  String valHorario(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> addRestaurant() async {
+    await Firebase.initializeApp();
+
+    Map<String, dynamic> restaurant = {
+      "direccion": direccion,
+      "name": name,
+      "horario": horario,
+      "image": "osaka_cocina_nikki.png",
+    };
+
+    References.restaurants.add(restaurant);
   }
 }

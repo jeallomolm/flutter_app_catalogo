@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/screens/main_screen.dart';
 import 'package:flutter_app_catalogo/screens/signUp_screen.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
@@ -15,10 +16,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   Color bgButton = Colors.transparent;
   TextStyle tsButton = TextStyles.bodyText;
-  bool disable = true;
 
   String email = "";
   String pass = "";
+  String idUser;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -31,6 +32,17 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               Form(
+                onChanged: () {
+                  setState(() {
+                    _formKey.currentState.validate()
+                        ? bgButton = Palette.principal
+                        : bgButton = Colors.transparent;
+                    _formKey.currentState.validate()
+                        ? tsButton =
+                            TextStyles.bodyText.copyWith(color: Colors.white)
+                        : tsButton = TextStyles.bodyText;
+                  });
+                },
                 key: _formKey,
                 child: Column(
                   children: [
@@ -53,16 +65,18 @@ class _LoginPageState extends State<LoginPage> {
                       text: "E-mail",
                       type: TextInputType.emailAddress,
                       obscureText: false,
-                      onChanged: valEmail,
+                      onChanged: updateEmail,
                       hint: 'abc@email.com',
+                      validator: valEmail,
                     ),
                     TextFieldForm(
                       icon: Icons.lock_outline,
                       text: "Contraseña",
                       type: TextInputType.text,
                       obscureText: true,
-                      onChanged: valContrasena,
+                      onChanged: updateContrasena,
                       hint: 'Contraseña',
+                      validator: valContrasena,
                     ),
                   ],
                 ),
@@ -77,26 +91,8 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               GestureDetector(
                 onTap: () {
-                  createRecord();
                   if (_formKey.currentState.validate()) {
-                    bool correct = false;
-
-                    for (int i = 0; i < users.length; i++) {
-                      if (users[i].email == email) {
-                        if (users[i].password == pass) {
-                          correct = true;
-                          userID = i;
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => MainScreen()));
-                        }
-                      }
-                    }
-
-                    if (!correct) {
-                      ShowDialog(context, "Error",
-                          "Usuario o contraseña incorrecta", "ACEPTAR", false);
-                    }
+                    valLogin();
                   }
                 },
                 child: Container(
@@ -152,26 +148,61 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void valEmail(String value) {
+  //   UPDATES
+  void updateEmail(String value) {
     this.email = value;
   }
 
-  void valContrasena(String value) {
+  void updateContrasena(String value) {
     this.pass = value;
   }
 
-  void createRecord() async {
+  // VALIDATORS
+  String valEmail(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else if (!value.contains("@") || !value.contains(".")) {
+      return "Email inválido";
+    } else {
+      return null;
+    }
+  }
+
+  String valContrasena(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> valLogin() async {
     await Firebase.initializeApp();
 
-    await FirebaseFirestore.instance.collection("books").doc("1").set({
-      'title': 'Mastering Flutter',
-      'description': 'Programming Guide for Dart'
-    });
-
-    DocumentReference ref =
-        await FirebaseFirestore.instance.collection("books").add({
-      'title': 'Flutter in Action',
-      'description': 'Complete Programming Guide to learn Flutter'
-    });
+    References.users.where("email", isEqualTo: email).get().then(
+          (value) => {
+            if (value.docs.isNotEmpty)
+              {
+                if (value.docs.first.get("password") == pass)
+                  {
+                    idUser = value.docs.first.id,
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MainScreen(idUser)))
+                  }
+                else
+                  {
+                    ShowDialog(context, "Error",
+                        "Usuario o contraseña incorrecta", "ACEPTAR", false)
+                  }
+              }
+            else
+              {
+                ShowDialog(context, "Error", "Usuario o contraseña incorrecta",
+                    "ACEPTAR", false)
+              }
+          },
+        );
   }
 }

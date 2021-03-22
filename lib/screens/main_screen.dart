@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
+import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 
 final PageController controller = PageController(initialPage: 0);
 
 class MainScreen extends StatefulWidget {
+  MainScreen(String idUser) {
+    userIDa = idUser;
+  }
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
