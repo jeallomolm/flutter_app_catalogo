@@ -4,6 +4,8 @@ import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/screens/main_screen.dart';
 import 'package:flutter_app_catalogo/screens/signUp_screen.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -51,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                       text: "E-mail",
                       type: TextInputType.emailAddress,
                       obscureText: false,
-                      callback: valEmail,
+                      onChanged: valEmail,
                       hint: 'abc@email.com',
                     ),
                     TextFieldForm(
@@ -59,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                       text: "Contraseña",
                       type: TextInputType.text,
                       obscureText: true,
-                      callback: valContrasena,
+                      onChanged: valContrasena,
                       hint: 'Contraseña',
                     ),
                   ],
@@ -75,6 +77,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               GestureDetector(
                 onTap: () {
+                  createRecord();
                   if (_formKey.currentState.validate()) {
                     bool correct = false;
 
@@ -155,5 +158,20 @@ class _LoginPageState extends State<LoginPage> {
 
   void valContrasena(String value) {
     this.pass = value;
+  }
+
+  void createRecord() async {
+    await Firebase.initializeApp();
+
+    await FirebaseFirestore.instance.collection("books").doc("1").set({
+      'title': 'Mastering Flutter',
+      'description': 'Programming Guide for Dart'
+    });
+
+    DocumentReference ref =
+        await FirebaseFirestore.instance.collection("books").add({
+      'title': 'Flutter in Action',
+      'description': 'Complete Programming Guide to learn Flutter'
+    });
   }
 }

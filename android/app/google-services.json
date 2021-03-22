@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "871223770439",
+    "project_id": "restaurantescatalogo",
+    "storage_bucket": "restaurantescatalogo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871223770439:android:edd98d3724a3a83fada062",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app_catalogo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871223770439-3kbhoujdptfm34kplc1n0duqeoevbp5o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4X5d4F2p2FpMiqzR4T3V2aNM0GIntClU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871223770439-3kbhoujdptfm34kplc1n0duqeoevbp5o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

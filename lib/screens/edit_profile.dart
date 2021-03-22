@@ -91,7 +91,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                       type: TextInputType.emailAddress,
                       obscureText: false,
                       hint: users[userID].email,
-                      callback: valEmail,
+                      onChanged: valEmail,
                     ),
                     TextFieldForm(
                       icon: Icons.phone_outlined,
@@ -99,7 +99,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                       type: TextInputType.number,
                       obscureText: false,
                       hint: users[userID].number,
-                      callback: valCelular,
+                      onChanged: valCelular,
                     ),
                   ],
                 ),
@@ -117,6 +117,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                 if (celular.isNotEmpty && celular != null) {
                   users[userID].setNumber(celular);
                 }
+                Navigator.pop(context);
                 ShowDialog(context, "Actualizar",
                     "Sus datos fueron actualizados con éxito", "ACEPTAR");
               }

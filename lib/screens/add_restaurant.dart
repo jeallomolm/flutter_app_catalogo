@@ -78,7 +78,7 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       type: TextInputType.text,
                       obscureText: false,
                       hint: "Capitalino",
-                      callback: valName,
+                      onChanged: valName,
                     ),
                     TextFieldForm(
                       icon: Icons.location_on_outlined,
@@ -86,7 +86,7 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       type: TextInputType.text,
                       obscureText: false,
                       hint: "Cra 5 #28 - 15",
-                      callback: valDireccion,
+                      onChanged: valDireccion,
                     ),
                     TextFieldForm(
                       icon: Icons.watch_later_outlined,
@@ -94,7 +94,7 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       type: TextInputType.text,
                       obscureText: false,
                       hint: "De lunes a viernes",
-                      callback: valHorario,
+                      onChanged: valHorario,
                     ),
                   ],
                 ),

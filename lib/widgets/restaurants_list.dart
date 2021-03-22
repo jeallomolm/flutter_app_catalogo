@@ -41,7 +41,7 @@ class _RestaurantListState extends State<RestaurantList> {
                 type: TextInputType.text,
                 obscureText: false,
                 hint: 'Buscar',
-                callback: filtro,
+                onChanged: filtro,
               ),
             ],
           ),

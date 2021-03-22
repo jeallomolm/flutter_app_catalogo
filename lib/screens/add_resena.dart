@@ -120,7 +120,7 @@ class _AddResenaState extends State<AddResena> {
                           type: TextInputType.number,
                           obscureText: false,
                           hint: "Estrellas",
-                          callback: updateCalificacion,
+                          onChanged: updateCalificacion,
                         )
                       ],
                     ),

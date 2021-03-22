@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/models/models.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -12,7 +15,6 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   Color bgButton = Colors.transparent;
   TextStyle tsButton = TextStyles.bodyText;
-  bool disable = true;
 
   String name;
   String email;
@@ -32,6 +34,17 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               children: [
                 Form(
+                  onChanged: () {
+                    setState(() {
+                      _formKey.currentState.validate()
+                          ? bgButton = Palette.principal
+                          : bgButton = Colors.transparent;
+                      _formKey.currentState.validate()
+                          ? tsButton =
+                              TextStyles.bodyText.copyWith(color: Colors.white)
+                          : tsButton = TextStyles.bodyText;
+                    });
+                  },
                   key: _formKey,
                   child: Column(
                     children: [
@@ -68,16 +81,18 @@ class _SignUpPageState extends State<SignUpPage> {
                         text: "Nombre Completo",
                         type: TextInputType.text,
                         obscureText: false,
-                        callback: valName,
+                        onChanged: updateName,
                         hint: 'Cesar Rodriguez',
+                        validator: valName,
                       ),
                       TextFieldForm(
                         icon: Icons.email_outlined,
                         text: "E-mail",
                         type: TextInputType.emailAddress,
                         obscureText: false,
-                        callback: valEmail,
+                        onChanged: updateEmail,
                         hint: 'abc123@correo.com',
+                        validator: valEmail,
                       ),
                       TextFieldForm(
                         icon: Icons.lock_outline,
@@ -85,7 +100,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         type: TextInputType.text,
                         obscureText: true,
                         hint: 'Contraseña',
-                        callback: valContrasena,
+                        onChanged: updatePassword,
+                        validator: valPassword,
                       ),
                       TextFieldForm(
                         icon: Icons.phone_outlined,
@@ -93,7 +109,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         type: TextInputType.number,
                         obscureText: false,
                         hint: '1231234567',
-                        callback: valNum,
+                        onChanged: updateNumber,
+                        validator: valNumber,
                       ),
                     ],
                   ),
@@ -106,9 +123,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       onTap: () {
                         if (_formKey.currentState.validate()) {
                           setState(() {
-                            users.add(User(
-                                name, pass, email, number, Profile.user, ""));
+                            addUser();
                           });
+                          Navigator.pop(context);
                           ShowDialog(
                               context,
                               "Crear usuario",
@@ -179,19 +196,70 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void valEmail(String value) {
+  //   UPDATES
+  void updateEmail(String value) {
     this.email = value;
   }
 
-  void valContrasena(String value) {
+  void updatePassword(String value) {
     this.pass = value;
   }
 
-  void valName(String value) {
+  void updateName(String value) {
     this.name = value;
   }
 
-  void valNum(String value) {
+  void updateNumber(String value) {
     this.number = value;
+  }
+
+  //   VALIDATORS
+  String valEmail(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else if (!value.contains("@") || !value.contains(".")) {
+      return "Email inválido";
+    } else {
+      return null;
+    }
+  }
+
+  String valPassword(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else {
+      return null;
+    }
+  }
+
+  String valName(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else {
+      return null;
+    }
+  }
+
+  String valNumber(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> addUser() async {
+    await Firebase.initializeApp();
+
+    Map<String, dynamic> user = {
+      "email": email,
+      "favs": Map<String, String>(),
+      "name": name,
+      "number": number,
+      "password": pass,
+      "typeUser": 0,
+    };
+
+    References.users.add(user);
   }
 }

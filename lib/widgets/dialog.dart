@@ -10,8 +10,7 @@ class ShowDialog {
     show(context, title, text, button);
   }
 
-  Function show(
-      BuildContext context, String title, String text, String button) {
+  show(BuildContext context, String title, String text, String button) {
     showDialog(
       context: context,
       builder: (buildcontext) {

@@ -7,7 +7,8 @@ class TextFieldForm extends StatefulWidget {
   final String hint;
   final TextInputType type;
   final bool obscureText;
-  final Function callback;
+  final Function onChanged;
+  final Function validator;
 
   const TextFieldForm(
       {Key key,
@@ -16,12 +17,13 @@ class TextFieldForm extends StatefulWidget {
       @required this.type,
       @required this.obscureText,
       @required this.hint,
-      @required this.callback})
+      @required this.onChanged,
+      @required this.validator})
       : super(key: key);
 
   @override
-  _TextFieldFormState createState() =>
-      _TextFieldFormState(icon, text, type, obscureText, hint, callback);
+  _TextFieldFormState createState() => _TextFieldFormState(
+      icon, text, type, obscureText, hint, onChanged, validator);
 }
 
 class _TextFieldFormState extends State<TextFieldForm> {
@@ -30,7 +32,11 @@ class _TextFieldFormState extends State<TextFieldForm> {
   String hint;
   TextInputType type;
   bool obscureText;
-  Function callback;
+  Function onChanged;
+  Function validator;
+
+  _TextFieldFormState(this.icon, this.text, this.type, this.obscureText,
+      this.hint, this.onChanged, this.validator);
 
   Color iconColor = Palette.principal;
 
@@ -43,14 +49,10 @@ class _TextFieldFormState extends State<TextFieldForm> {
         children: [
           getText(),
           TextFormField(
-            validator: (value) {
-              if (value.isEmpty) {
-                return "Campo vacio";
-              }
-            },
+            validator: validator,
             onChanged: (value) {
               setState(() {
-                callback(value);
+                onChanged(value);
               });
             },
             obscureText: obscureText,
@@ -77,9 +79,6 @@ class _TextFieldFormState extends State<TextFieldForm> {
     );
   }
 
-  _TextFieldFormState(this.icon, this.text, this.type, this.obscureText,
-      this.hint, this.callback);
-
   Widget getText() {
     if (this.text != null && this.text != "") {
       return Text(
@@ -87,10 +86,7 @@ class _TextFieldFormState extends State<TextFieldForm> {
         style: TextStyle(fontWeight: FontWeight.bold),
       );
     } else {
-      return Text(
-        "",
-        style: TextStyle(fontSize: 0.0),
-      );
+      return SizedBox();
     }
   }
 }
