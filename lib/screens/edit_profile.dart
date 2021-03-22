@@ -119,7 +119,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                 }
                 Navigator.pop(context);
                 ShowDialog(context, "Actualizar",
-                    "Sus datos fueron actualizados con éxito", "ACEPTAR");
+                    "Sus datos fueron actualizados con éxito", "ACEPTAR", true);
               }
             });
           },

@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     if (!correct) {
                       ShowDialog(context, "Error",
-                          "Usuario o contraseña incorrecta", "ACEPTAR");
+                          "Usuario o contraseña incorrecta", "ACEPTAR", false);
                     }
                   }
                 },

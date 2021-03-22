@@ -125,12 +125,12 @@ class _SignUpPageState extends State<SignUpPage> {
                           setState(() {
                             addUser();
                           });
-                          Navigator.pop(context);
                           ShowDialog(
                               context,
                               "Crear usuario",
                               "El usuario se ha creado exitosamente",
-                              "ACEPTAR");
+                              "ACEPTAR",
+                              true);
                         }
                       },
                       child: Container(

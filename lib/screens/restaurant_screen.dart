@@ -190,7 +190,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         );
         deleteRestaurant();
         ShowDialog(context, "Favoritos",
-            "El restaurante ha sido eliminado de favoritos", "ACEPTAR");
+            "El restaurante ha sido eliminado de favoritos", "ACEPTAR", false);
       } else {
         fav = IconButton(
           icon: Icon(
@@ -201,7 +201,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         );
         addRestaurant();
         ShowDialog(context, "Favoritos",
-            "El restaurante ha sido agregado a favoritos", "ACEPTAR");
+            "El restaurante ha sido agregado a favoritos", "ACEPTAR", false);
       }
       refresh();
     });

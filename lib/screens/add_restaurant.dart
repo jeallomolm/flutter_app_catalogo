@@ -108,8 +108,12 @@ class _EditProfileUserState extends State<AddRestaurant> {
               if (_key.currentState.validate()) {
                 restaurantsData.add(
                     Restaurant(name, horario, direccion, 0.0, "cuzco.png"));
-                ShowDialog(context, "Agregar",
-                    "El restaurante fue agregado exitosamente", "ACEPTAR");
+                ShowDialog(
+                    context,
+                    "Agregar",
+                    "El restaurante fue agregado exitosamente",
+                    "ACEPTAR",
+                    true);
               }
             });
           },
