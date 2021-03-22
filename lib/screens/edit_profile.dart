@@ -40,8 +40,9 @@ class _EditProfileUserState extends State<EditProfileUser> {
             },
           ),
           title: Center(
-              child: Text("Actualizar Datos",
-                  style: TextStyle(color: Palette.principal))),
+              child: Text(
+            "Actualizar Datos",
+          )),
         ),
         body: Column(
           children: [
