@@ -47,19 +47,26 @@ class _EditProfileUserState extends State<AddRestaurant> {
         ),
         body: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                height: 20.0,
+              ),
               Container(
-                margin: EdgeInsets.only(left: 10.0),
+                margin: EdgeInsets.only(left: 20.0),
                 child: Text(
                   "Portada",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(left: 10.0),
+                margin: EdgeInsets.only(left: 20.0),
                 child: Text(
                   "Toma una foto horizontal para que tus clientes conozcan tus restaurante.",
                 ),
+              ),
+              SizedBox(
+                height: 20.0,
               ),
               Form(
                 key: _key,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
+import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/models/models.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -12,6 +14,13 @@ class _SignUpPageState extends State<SignUpPage> {
   TextStyle tsButton = TextStyles.bodyText;
   bool disable = true;
 
+  String name;
+  String email;
+  String pass;
+  String number;
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -22,61 +31,72 @@ class _SignUpPageState extends State<SignUpPage> {
             width: double.infinity,
             child: Column(
               children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 80.0,
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: Palette.principal,
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 80.0,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Palette.principal,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
                         ),
                       ),
-                    ),
-                    Text("Gourmet", style: TextStyles.titleText),
-                    SizedBox(height: 30.0),
-                    Text(
-                      "Bienvenido a Gourmet",
-                      style: TextStyles.bodyText.copyWith(
-                          fontWeight: FontWeight.bold, fontSize: 16.0),
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      "Regístrate",
-                      style: TextStyles.bodyText,
-                    ),
-                    SizedBox(height: 50.0),
-                    TextFieldForm(
-                      icon: Icons.person_outline,
-                      text: "Nombre Completo",
-                      type: TextInputType.text,
-                      obscureText: false,
-                    ),
-                    TextFieldForm(
-                      icon: Icons.email_outlined,
-                      text: "E-mail",
-                      type: TextInputType.emailAddress,
-                      obscureText: false,
-                    ),
-                    TextFieldForm(
-                      icon: Icons.lock_outline,
-                      text: "Contraseña",
-                      type: TextInputType.text,
-                      obscureText: true,
-                    ),
-                    TextFieldForm(
-                      icon: Icons.phone_outlined,
-                      text: "Celular",
-                      type: TextInputType.number,
-                      obscureText: false,
-                    ),
-                  ],
+                      Text("Gourmet", style: TextStyles.titleText),
+                      SizedBox(height: 30.0),
+                      Text(
+                        "Bienvenido a Gourmet",
+                        style: TextStyles.bodyText.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 16.0),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        "Regístrate",
+                        style: TextStyles.bodyText,
+                      ),
+                      SizedBox(height: 50.0),
+                      TextFieldForm(
+                        icon: Icons.person_outline,
+                        text: "Nombre Completo",
+                        type: TextInputType.text,
+                        obscureText: false,
+                        callback: valName,
+                        hint: 'Cesar Rodriguez',
+                      ),
+                      TextFieldForm(
+                        icon: Icons.email_outlined,
+                        text: "E-mail",
+                        type: TextInputType.emailAddress,
+                        obscureText: false,
+                        callback: valEmail,
+                        hint: 'abc123@correo.com',
+                      ),
+                      TextFieldForm(
+                        icon: Icons.lock_outline,
+                        text: "Contraseña",
+                        type: TextInputType.text,
+                        obscureText: true,
+                        hint: 'Contraseña',
+                        callback: valContrasena,
+                      ),
+                      TextFieldForm(
+                        icon: Icons.phone_outlined,
+                        text: "Celular",
+                        type: TextInputType.number,
+                        obscureText: false,
+                        hint: '1231234567',
+                        callback: valNum,
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 50.0),
                 Column(
@@ -84,17 +104,17 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          if (disable) {
-                            bgButton = Palette.principal;
-                            tsButton = tsButton.copyWith(color: Colors.white);
-                          } else {
-                            bgButton = Colors.transparent;
-                            tsButton =
-                                tsButton.copyWith(color: Palette.principal);
-                          }
-                          disable = !disable;
-                        });
+                        if (_formKey.currentState.validate()) {
+                          setState(() {
+                            users.add(User(
+                                name, pass, email, number, Profile.user, ""));
+                          });
+                          ShowDialog(
+                              context,
+                              "Crear usuario",
+                              "El usuario se ha creado exitosamente",
+                              "ACEPTAR");
+                        }
                       },
                       child: Container(
                         margin: EdgeInsets.symmetric(
@@ -157,5 +177,21 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  void valEmail(String value) {
+    this.email = value;
+  }
+
+  void valContrasena(String value) {
+    this.pass = value;
+  }
+
+  void valName(String value) {
+    this.name = value;
+  }
+
+  void valNum(String value) {
+    this.number = value;
   }
 }

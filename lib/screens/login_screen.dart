@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
+import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/screens/main_screen.dart';
 import 'package:flutter_app_catalogo/screens/signUp_screen.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 
@@ -13,6 +15,11 @@ class _LoginPageState extends State<LoginPage> {
   TextStyle tsButton = TextStyles.bodyText;
   bool disable = true;
 
+  String email = "";
+  String pass = "";
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,35 +28,42 @@ class _LoginPageState extends State<LoginPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Column(
-                children: [
-                  SizedBox(height: 80.0),
-                  Text("Gourmet", style: TextStyles.titleText),
-                  SizedBox(height: 30.0),
-                  Text(
-                    "Bienvenido a Gourmet",
-                    style: TextStyles.bodyText
-                        .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0),
-                  ),
-                  SizedBox(height: 5.0),
-                  Text(
-                    "Inicia sesión",
-                    style: TextStyles.bodyText,
-                  ),
-                  SizedBox(height: 50.0),
-                  TextFieldForm(
-                    icon: Icons.email_outlined,
-                    text: "E-mail",
-                    type: TextInputType.emailAddress,
-                    obscureText: false,
-                  ),
-                  TextFieldForm(
-                    icon: Icons.lock_outline,
-                    text: "Contraseña",
-                    type: TextInputType.text,
-                    obscureText: true,
-                  ),
-                ],
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    SizedBox(height: 80.0),
+                    Text("Gourmet", style: TextStyles.titleText),
+                    SizedBox(height: 30.0),
+                    Text(
+                      "Bienvenido a Gourmet",
+                      style: TextStyles.bodyText.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: 16.0),
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      "Inicia sesión",
+                      style: TextStyles.bodyText,
+                    ),
+                    SizedBox(height: 50.0),
+                    TextFieldForm(
+                      icon: Icons.email_outlined,
+                      text: "E-mail",
+                      type: TextInputType.emailAddress,
+                      obscureText: false,
+                      callback: valEmail,
+                      hint: 'abc@email.com',
+                    ),
+                    TextFieldForm(
+                      icon: Icons.lock_outline,
+                      text: "Contraseña",
+                      type: TextInputType.text,
+                      obscureText: true,
+                      callback: valContrasena,
+                      hint: 'Contraseña',
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -61,16 +75,26 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               GestureDetector(
                 onTap: () {
-                  setState(() {
-                    if (disable) {
-                      bgButton = Palette.principal;
-                      tsButton = tsButton.copyWith(color: Colors.white);
-                    } else {
-                      bgButton = Colors.transparent;
-                      tsButton = tsButton.copyWith(color: Palette.principal);
+                  if (_formKey.currentState.validate()) {
+                    bool correct = false;
+
+                    for (int i = 0; i < users.length; i++) {
+                      if (users[i].email == email) {
+                        if (users[i].password == pass) {
+                          correct = true;
+                          userID = i;
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => MainScreen()));
+                        }
+                      }
                     }
-                    disable = !disable;
-                  });
+
+                    if (!correct) {
+                      ShowDialog(context, "Error",
+                          "Usuario o contraseña incorrecta", "ACEPTAR");
+                    }
+                  }
                 },
                 child: Container(
                   height: 60.0,
@@ -94,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Container(
                 height: 50.0,
-                //margin: EdgeInsets.all(5.0),
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -124,5 +147,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void valEmail(String value) {
+    this.email = value;
+  }
+
+  void valContrasena(String value) {
+    this.pass = value;
   }
 }

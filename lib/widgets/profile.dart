@@ -3,6 +3,7 @@ import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/screens/add_restaurant.dart';
 import 'package:flutter_app_catalogo/screens/edit_profile.dart';
+import 'package:flutter_app_catalogo/screens/login_screen.dart';
 
 class ProfileUser extends StatefulWidget {
   @override
@@ -94,7 +95,12 @@ class _ProfileUserState extends State<ProfileUser> {
                         Icons.arrow_right,
                         color: Colors.grey[800],
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                            (route) => false);
+                      },
                     ),
                   )
                 ],
