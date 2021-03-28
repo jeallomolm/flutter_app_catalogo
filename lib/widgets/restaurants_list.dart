@@ -4,6 +4,7 @@ import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/models/models.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RestaurantList extends StatefulWidget {
   @override
@@ -60,10 +61,28 @@ class _RestaurantListState extends State<RestaurantList> {
                   future: _myList,
                   builder: ((context, snapshot) {
                     if (snapshot.hasData) {
-                      buildBackup();
-                      return Column(
-                        children: restaurantsList,
-                      );
+                      //buildBackup();
+                      if (restaurantsList.isEmpty) {
+                        return Column(children: [
+                          Text(
+                            "Sin resultados.",
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 18.0),
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Text(
+                            "No hay restaurantes para mostrar.",
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 18.0),
+                          ),
+                        ]);
+                      } else {
+                        return Column(
+                          children: restaurantsList,
+                        );
+                      }
                     } else {
                       return Column(
                         children: [
@@ -140,13 +159,25 @@ class _RestaurantListState extends State<RestaurantList> {
   Future<List> listarRestaurantes() async {
     await Firebase.initializeApp();
 
-    restaurantsData.clear();
+    restaurantsList.clear();
     await References.restaurants.get().then((value) => {
-          value.docs.forEach((element) {
-            addData(element.get("name"), element.get("horario"),
-                element.get("direccion"), element.id, element.get("image"));
-          })
+          if (value.docs.isNotEmpty)
+            {
+              value.docs.forEach((element) {
+                restaurantsList.add(RestaurantItem(
+                    element.id,
+                    element.get("horario"),
+                    element.get("name"),
+                    element.get("direccion"),
+                    element.get("image"),
+                    () {}));
+              })
+            }
         });
+
+    setState(() {
+      restaurantsListBackup = restaurantsList;
+    });
 
     return restaurantsData;
   }
