@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/screens/add_restaurant.dart';
 import 'package:flutter_app_catalogo/screens/edit_profile.dart';
 import 'package:flutter_app_catalogo/screens/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+String name;
 
 class ProfileUser extends StatefulWidget {
   @override
@@ -11,6 +15,19 @@ class ProfileUser extends StatefulWidget {
 }
 
 class _ProfileUserState extends State<ProfileUser> {
+  Future<String> _name;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _name = getDataUser();
+  }
+
+  String email;
+  String number;
+  int typeUser = 0;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -44,10 +61,15 @@ class _ProfileUserState extends State<ProfileUser> {
                   SizedBox(
                     width: 10.0,
                   ),
-                  Text(
-                    users[userID].name,
-                    style: TextStyle(fontSize: 18.0),
-                  ),
+                  FutureBuilder(
+                      future: _name,
+                      builder: ((context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text((snapshot.data));
+                        } else {
+                          return Text("Cargando...");
+                        }
+                      })),
                 ],
               ),
               SizedBox(
@@ -75,11 +97,13 @@ class _ProfileUserState extends State<ProfileUser> {
                         Icons.arrow_right,
                         color: Colors.grey[800],
                       ),
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EditProfileUser()));
+                                builder: (context) =>
+                                    EditProfileUser(email, number)));
+                        refresh();
                       },
                     ),
                   ),
@@ -128,7 +152,7 @@ class _ProfileUserState extends State<ProfileUser> {
   }
 
   Widget addRestaurantButton() {
-    if (users[userID].profile == Profile.admin) {
+    if (typeUser == 1) {
       return ListTile(
         title: Text("Agregar restaurante"),
         leading: Icon(
@@ -149,5 +173,31 @@ class _ProfileUserState extends State<ProfileUser> {
     } else {
       return SizedBox();
     }
+  }
+
+  refresh() {
+    setState(() {
+      getDataUser();
+    });
+  }
+
+  Future<String> getDataUser() async {
+    await Firebase.initializeApp();
+    String aux;
+
+    await References.users.doc(userIDa).get().then((value) => {
+          aux = value.get("name"),
+          email = value.get("email"),
+          number = value.get("number"),
+          typeUser = value.get("typeUser"),
+        });
+
+    if (typeUser == 1) {
+      setState(() {
+        typeUser = 1;
+      });
+    }
+
+    return aux;
   }
 }

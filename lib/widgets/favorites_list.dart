@@ -106,7 +106,8 @@ class _FavoritesListState extends State<FavoritesList> {
     }
   }
 
-  refresh() {
+  refresh() async {
+    await listarRestaurantes();
     setState(() {
       updateRestaurantsFav();
     });
@@ -121,7 +122,6 @@ class _FavoritesListState extends State<FavoritesList> {
         .get()
         .then((value) => {
               value.docs.forEach((element) {
-                print(element.get("idRestaurant"));
                 References.restaurants
                     .doc(element.get("idRestaurant"))
                     .get()

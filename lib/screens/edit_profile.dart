@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
+import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/widgets/dialog.dart';
 import 'package:flutter_app_catalogo/widgets/textFieldForm.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class EditProfileUser extends StatefulWidget {
+  final String emailActual;
+  final String numberActual;
+
+  const EditProfileUser(this.emailActual, this.numberActual);
+
   @override
-  _EditProfileUserState createState() => _EditProfileUserState();
+  _EditProfileUserState createState() =>
+      _EditProfileUserState(emailActual, numberActual);
 }
 
 class _EditProfileUserState extends State<EditProfileUser> {
@@ -19,8 +27,25 @@ class _EditProfileUserState extends State<EditProfileUser> {
   TextStyle tsButton = TextStyles.bodyText;
   bool disable = true;
 
-  String email = "";
-  String celular = "";
+  String email = " ";
+  String number = " ";
+
+  Future<String> _name;
+
+  String emailActual;
+  String numberActual;
+
+  _EditProfileUserState(this.emailActual, this.numberActual) {
+    email = emailActual;
+    number = numberActual;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _name = getNameUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +65,9 @@ class _EditProfileUserState extends State<EditProfileUser> {
             },
           ),
           title: Center(
-              child: Text(
-            "Actualizar Datos",
-          )),
+              child: Text("Actualizar Datos",
+                  style: TextStyles.bodyText
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 18.0))),
         ),
         body: Column(
           children: [
@@ -65,10 +90,15 @@ class _EditProfileUserState extends State<EditProfileUser> {
                       SizedBox(
                         width: 10.0,
                       ),
-                      Text(
-                        users[userID].name,
-                        style: TextStyle(fontSize: 18.0),
-                      ),
+                      FutureBuilder(
+                          future: _name,
+                          builder: ((context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text((snapshot.data));
+                            } else {
+                              return Text("Cargando...");
+                            }
+                          })),
                     ],
                   ),
                   SizedBox(
@@ -82,28 +112,31 @@ class _EditProfileUserState extends State<EditProfileUser> {
             ),
             Expanded(
               child: Form(
-                key: _key,
-                child: Column(
-                  children: [
-                    TextFieldForm(
-                      icon: Icons.email_outlined,
-                      text: "E-mail",
-                      type: TextInputType.emailAddress,
-                      obscureText: false,
-                      hint: users[userID].email,
-                      onChanged: valEmail,
-                    ),
-                    TextFieldForm(
-                      icon: Icons.phone_outlined,
-                      text: "Celular",
-                      type: TextInputType.number,
-                      obscureText: false,
-                      hint: users[userID].number,
-                      onChanged: valCelular,
-                    ),
-                  ],
-                ),
-              ),
+                  key: _key,
+                  child: Column(
+                    children: [
+                      TextFieldForm(
+                        icon: Icons.email_outlined,
+                        text: "E-mail",
+                        type: TextInputType.emailAddress,
+                        obscureText: false,
+                        hint: "Nuevo correo",
+                        onChanged: updateEmail,
+                        validator: valEmail,
+                        initText: emailActual,
+                      ),
+                      TextFieldForm(
+                        icon: Icons.phone_outlined,
+                        text: "Celular",
+                        type: TextInputType.number,
+                        obscureText: false,
+                        hint: "Nuevo celular",
+                        onChanged: updateNumber,
+                        validator: valNumber,
+                        initText: numberActual,
+                      ),
+                    ],
+                  )),
             ),
           ],
         ),
@@ -111,13 +144,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
           onTap: () {
             setState(() {
               if (_key.currentState.validate()) {
-                if (email.isNotEmpty && email != null) {
-                  users[userID].setEmail(email);
-                }
-                if (celular.isNotEmpty && celular != null) {
-                  users[userID].setNumber(celular);
-                }
-                Navigator.pop(context);
+                updateUser();
                 ShowDialog(context, "Actualizar",
                     "Sus datos fueron actualizados con éxito", "ACEPTAR", true);
               }
@@ -162,23 +189,61 @@ class _EditProfileUserState extends State<EditProfileUser> {
     }
   }
 
-  void valEmail(String value) {
-    email = value;
+  //   UPDATES
+  void updateEmail(String value) {
+    this.email = value;
+  }
 
-    if (value.contains("@") && value.contains(".")) {
-      emailVal = Palette.principal;
+  void updateNumber(String value) {
+    this.number = value;
+  }
+
+  //   VALIDATORS
+  String valEmail(String value) {
+    if (value.isEmpty) {
+      return "Campo vacio";
+    } else if (!value.contains("@") || !value.contains(".")) {
+      return "Email inválido";
     } else {
-      emailVal = Colors.red;
+      return null;
     }
   }
 
-  void valCelular(String value) {
-    celular = value;
-
+  String valNumber(String value) {
     if (value.isEmpty) {
-      celularVal = Palette.principal;
+      return "Campo vacio";
     } else {
-      celularVal = Colors.red;
+      return null;
     }
+  }
+
+  Future<String> getNameUser() async {
+    await Firebase.initializeApp();
+    String aux;
+
+    await References.users.doc(userIDa).get().then((value) => {
+          aux = value.get("name"),
+        });
+
+    return aux;
+  }
+
+  Future<String> getDataUser() async {
+    await Firebase.initializeApp();
+    String aux;
+
+    await References.users.doc(userIDa).get().then((value) => {
+          aux = value.get("name"),
+          /*number = value.get("number"),
+          email = value.get("email"),*/
+        });
+
+    return aux;
+  }
+
+  Future<void> updateUser() async {
+    await Firebase.initializeApp();
+
+    References.users.doc(userIDa).update({"email": email, "number": number});
   }
 }

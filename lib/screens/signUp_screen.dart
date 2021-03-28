@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
-import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/firebase/references.dart';
-import 'package:flutter_app_catalogo/models/models.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -84,6 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onChanged: updateName,
                         hint: 'Cesar Rodriguez',
                         validator: valName,
+                        initText: "",
                       ),
                       TextFieldForm(
                         icon: Icons.email_outlined,
@@ -93,6 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onChanged: updateEmail,
                         hint: 'abc123@correo.com',
                         validator: valEmail,
+                        initText: "",
                       ),
                       TextFieldForm(
                         icon: Icons.lock_outline,
@@ -102,6 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         hint: 'Contraseña',
                         onChanged: updatePassword,
                         validator: valPassword,
+                        initText: "",
                       ),
                       TextFieldForm(
                         icon: Icons.phone_outlined,
@@ -111,6 +111,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         hint: '1231234567',
                         onChanged: updateNumber,
                         validator: valNumber,
+                        initText: "",
                       ),
                     ],
                   ),

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
-import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/screens/main_screen.dart';
 import 'package:flutter_app_catalogo/screens/signUp_screen.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class LoginPage extends StatefulWidget {
@@ -68,6 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                       onChanged: updateEmail,
                       hint: 'abc@email.com',
                       validator: valEmail,
+                      initText: "",
                     ),
                     TextFieldForm(
                       icon: Icons.lock_outline,
@@ -77,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                       onChanged: updateContrasena,
                       hint: 'Contraseña',
                       validator: valContrasena,
+                      initText: "",
                     ),
                   ],
                 ),

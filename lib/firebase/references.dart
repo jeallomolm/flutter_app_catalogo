@@ -5,4 +5,5 @@ class References {
   static final restaurants =
       FirebaseFirestore.instance.collection("restaurants");
   static final favs = FirebaseFirestore.instance.collection("favoritos");
+  static final resenas = FirebaseFirestore.instance.collection("resenas");
 }

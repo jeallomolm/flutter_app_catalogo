@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
 import 'package:flutter_app_catalogo/data/data.dart';
 import 'package:flutter_app_catalogo/firebase/references.dart';
-import 'package:flutter_app_catalogo/models/models.dart';
 import 'package:flutter_app_catalogo/widgets/widgets.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -92,6 +91,7 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       hint: "Capitalino",
                       onChanged: updateName,
                       validator: valName,
+                      initText: "",
                     ),
                     TextFieldForm(
                       icon: Icons.location_on_outlined,
@@ -101,6 +101,7 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       hint: "Cra 5 #28 - 15",
                       onChanged: updateDireccion,
                       validator: valDireccion,
+                      initText: "",
                     ),
                     TextFieldForm(
                       icon: Icons.watch_later_outlined,
@@ -110,6 +111,7 @@ class _EditProfileUserState extends State<AddRestaurant> {
                       hint: "De lunes a viernes",
                       onChanged: updateHorario,
                       validator: valHorario,
+                      initText: "",
                     ),
                   ],
                 ),

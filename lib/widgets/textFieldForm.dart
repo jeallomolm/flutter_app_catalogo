@@ -9,6 +9,7 @@ class TextFieldForm extends StatefulWidget {
   final bool obscureText;
   final Function onChanged;
   final Function validator;
+  final String initText;
 
   const TextFieldForm(
       {Key key,
@@ -18,12 +19,13 @@ class TextFieldForm extends StatefulWidget {
       @required this.obscureText,
       @required this.hint,
       @required this.onChanged,
-      @required this.validator})
+      @required this.validator,
+      @required this.initText})
       : super(key: key);
 
   @override
   _TextFieldFormState createState() => _TextFieldFormState(
-      icon, text, type, obscureText, hint, onChanged, validator);
+      icon, text, type, obscureText, hint, onChanged, validator, initText);
 }
 
 class _TextFieldFormState extends State<TextFieldForm> {
@@ -34,9 +36,10 @@ class _TextFieldFormState extends State<TextFieldForm> {
   bool obscureText;
   Function onChanged;
   Function validator;
+  String initText;
 
   _TextFieldFormState(this.icon, this.text, this.type, this.obscureText,
-      this.hint, this.onChanged, this.validator);
+      this.hint, this.onChanged, this.validator, this.initText);
 
   Color iconColor = Palette.principal;
 
@@ -49,6 +52,7 @@ class _TextFieldFormState extends State<TextFieldForm> {
         children: [
           getText(),
           TextFormField(
+            initialValue: initText,
             validator: validator,
             onChanged: (value) {
               setState(() {

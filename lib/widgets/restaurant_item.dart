@@ -13,7 +13,8 @@ class RestaurantItem extends StatefulWidget {
   final Function() refresh;
 
   RestaurantItem(this.id, this.horario, this._name, this.direccion, this.image,
-      this.refresh);
+      this.refresh)
+      : super(key: UniqueKey());
 
   @override
   _RestaurantItemState createState() => _RestaurantItemState(this.id,
@@ -40,12 +41,13 @@ class _RestaurantItemState extends State<RestaurantItem> {
     return Visibility(
       visible: _visible,
       child: GestureDetector(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => RestaurantScreen(
                       id, horario, _name, refresh, image, direccion)));
+          refresh();
         },
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),

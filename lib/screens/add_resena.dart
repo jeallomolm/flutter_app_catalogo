@@ -1,38 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_catalogo/config/config.dart';
-import 'package:flutter_app_catalogo/data/data.dart';
-import 'package:flutter_app_catalogo/models/models.dart';
+import 'package:flutter_app_catalogo/firebase/references.dart';
 import 'package:flutter_app_catalogo/widgets/resena_textfield.dart';
 import 'package:flutter_app_catalogo/widgets/textFieldForm.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:date_format/date_format.dart';
 
 class AddResena extends StatefulWidget {
-  final int id;
+  final String idRestaurant;
   final String name;
   final String image;
-  final Function() refresh;
+  final String userName;
 
-  AddResena(this.id, this.name, this.refresh, this.image);
+  AddResena(this.idRestaurant, this.name, this.image, this.userName);
 
   @override
-  _AddResenaState createState() => _AddResenaState(id, name, refresh, image);
+  _AddResenaState createState() =>
+      _AddResenaState(idRestaurant, name, image, userName);
 }
 
 class _AddResenaState extends State<AddResena> {
-  int id;
+  String idRestaurant;
   String image;
   String name;
-  Function() refresh;
+  String username;
 
   Color bgButton = Colors.transparent;
   TextStyle tsButton = TextStyles.bodyText;
   bool disable = true;
 
-  String resenaText = "";
-  double calificacion;
+  String resenaText = " ";
+  int calificacion;
 
   final _formKey = GlobalKey<FormState>();
 
-  _AddResenaState(this.id, this.name, this.refresh, this.image);
+  _AddResenaState(this.idRestaurant, this.name, this.image, this.username);
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +123,8 @@ class _AddResenaState extends State<AddResena> {
                           obscureText: false,
                           hint: "Estrellas",
                           onChanged: updateCalificacion,
+                          validator: valCalificacion,
+                          initText: "",
                         )
                       ],
                     ),
@@ -136,9 +140,7 @@ class _AddResenaState extends State<AddResena> {
         onTap: () {
           setState(() {
             if (_formKey.currentState.validate()) {
-              resenasData.add(
-                  Resena(id, resenaText, users[userID].name, calificacion));
-              refresh();
+              addResena();
               Navigator.pop(context);
             }
           });
@@ -166,15 +168,55 @@ class _AddResenaState extends State<AddResena> {
     ));
   }
 
-  void updateCalificacion(String calificacion) {
-    this.calificacion = double.parse(calificacion);
+  //   UPDATES
+  void updateCalificacion(String value) {
+    this.calificacion = double.parse(value
+            .replaceFirst(".", "^")
+            .replaceAll(".", "")
+            .replaceAll("^", "."))
+        .toInt();
   }
 
-  void updateResena(String resena) {
-    if (resena.isEmpty || resena == null) {
-      resenaText = "123";
+  void updateResena(String value) {
+    if (value != "") {
+      this.resenaText = value;
     } else {
-      resenaText = resena;
+      this.resenaText = " ";
     }
+  }
+
+  //   VALIDATORS
+  String valCalificacion(String value) {
+    int auxValue = double.parse(value
+            .replaceFirst(".", "^")
+            .replaceAll(".", "")
+            .replaceAll("^", "."))
+        .toInt();
+
+    if (value.isEmpty) {
+      return "Campo vacio.";
+    } else if (auxValue < 0 || auxValue > 5) {
+      return "El rango va desde 0 a 5 estrellas.";
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> addResena() async {
+    await Firebase.initializeApp();
+
+    String date = formatDate(
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+        [dd, '-', M, '-', yyyy]);
+
+    Map<String, dynamic> resena = {
+      "idRestaurant": idRestaurant,
+      "name": username,
+      "resena": resenaText,
+      "calificacion": calificacion,
+      "date": date,
+    };
+
+    References.resenas.add(resena);
   }
 }

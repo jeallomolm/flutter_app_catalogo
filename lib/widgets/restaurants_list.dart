@@ -8,10 +8,13 @@ import 'package:firebase_core/firebase_core.dart';
 class RestaurantList extends StatefulWidget {
   @override
   _RestaurantListState createState() => _RestaurantListState();
+
+  RestaurantList() : super(key: UniqueKey());
 }
 
 class _RestaurantListState extends State<RestaurantList> {
-  List<Widget> restaurantsList = [];
+  List<RestaurantItem> restaurantsList = [];
+  List<RestaurantItem> restaurantsListBackup = [];
 
   Future<List> _myList;
 
@@ -45,6 +48,7 @@ class _RestaurantListState extends State<RestaurantList> {
                 hint: 'Buscar',
                 onChanged: filtro,
                 validator: (dynamic) {},
+                initText: "",
               ),
             ],
           ),
@@ -56,7 +60,7 @@ class _RestaurantListState extends State<RestaurantList> {
                   future: _myList,
                   builder: ((context, snapshot) {
                     if (snapshot.hasData) {
-                      restaurantsList = List.from(crear(snapshot.data));
+                      buildBackup();
                       return Column(
                         children: restaurantsList,
                       );
@@ -79,48 +83,58 @@ class _RestaurantListState extends State<RestaurantList> {
   }
 
   void filtro(String filtro) {
-    setState(() {
-      restaurantsList.clear();
-      int i;
-      for (i = 0; i < restaurantsData.length; i++) {
-        if (restaurantsData[i]
-            .name
-            .toLowerCase()
-            .contains(filtro.toLowerCase())) {
-          restaurantsList.add(RestaurantItem(
-              restaurantsData[i].id,
-              restaurantsData[i].horario,
-              restaurantsData[i].name,
-              restaurantsData[i].direccion,
-              restaurantsData[i].image,
-              () {}));
-        }
-      }
-
-      if (restaurantsList.isEmpty) {
-        restaurantsList.add(
-          Container(
-            padding: EdgeInsets.only(top: 250.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Sin resultados.",
-                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18.0),
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Text(
-                  "No hay restaurantes para mostrar.",
-                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18.0),
-                ),
-              ],
-            ),
-          ),
-        );
+    this.setState(() {
+      if (filtro != "") {
+        restaurantsList = restaurantsListBackup
+            .where((element) =>
+                element.name.toLowerCase().contains(filtro.toLowerCase()))
+            .toList();
+      } else {
+        restaurantsList = restaurantsListBackup;
       }
     });
+  }
+
+  buildBackup() {
+    restaurantsListBackup.clear();
+    int i;
+    for (i = 0; i < restaurantsData.length; i++) {
+      restaurantsListBackup.cast().add(RestaurantItem(
+          restaurantsData[i].id,
+          restaurantsData[i].horario,
+          restaurantsData[i].name,
+          restaurantsData[i].direccion,
+          restaurantsData[i].image,
+          () {}));
+    }
+
+    if (restaurantsListBackup.isEmpty) {
+      restaurantsListBackup.cast<Widget>().add(
+            Container(
+              padding: EdgeInsets.only(top: 250.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Sin resultados.",
+                    style:
+                        TextStyle(fontStyle: FontStyle.italic, fontSize: 18.0),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Text(
+                    "No hay restaurantes para mostrar.",
+                    style:
+                        TextStyle(fontStyle: FontStyle.italic, fontSize: 18.0),
+                  ),
+                ],
+              ),
+            ),
+          );
+    }
+
+    restaurantsList = restaurantsListBackup;
   }
 
   Future<List> listarRestaurantes() async {
@@ -134,10 +148,6 @@ class _RestaurantListState extends State<RestaurantList> {
           })
         });
 
-    /*for (int i = 0; i < restaurantsData.length; i++) {
-      print(restaurantsData[i].id);
-    }*/
-
     return restaurantsData;
   }
 
@@ -146,39 +156,5 @@ class _RestaurantListState extends State<RestaurantList> {
     setState(() {
       restaurantsData.add(Restaurant(name, horario, direccion, id, image));
     });
-  }
-
-  List<Widget> crear(List list) {
-    restaurantsList.clear();
-    int i;
-    for (i = 0; i < list.length; i++) {
-      restaurantsList.add(RestaurantItem(list[i].id, list[i].horario,
-          list[i].name, list[i].direccion, list[i].image, () {}));
-    }
-
-    if (restaurantsList.isEmpty) {
-      restaurantsList.add(
-        Container(
-          padding: EdgeInsets.only(top: 250.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Sin resultados.",
-                style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18.0),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Text(
-                "No hay restaurantes para mostrar.",
-                style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18.0),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    return restaurantsList;
   }
 }

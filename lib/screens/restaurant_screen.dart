@@ -62,7 +62,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
             color: Palette.principal,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(
+              context,
+            );
           },
         ),
         title: Center(
@@ -151,8 +153,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 scrollDirection: Axis.vertical,
                 controller: controller,
                 children: [
-                  /*InfoRestaurant(id),
-                  ResenaList(id),*/
+                  InfoRestaurant(horario, direccion, image, id),
+                  ResenaList(id, name, image),
                 ],
                 physics: NeverScrollableScrollPhysics(),
               ),
@@ -190,7 +192,6 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         ShowDialog(context, "Favoritos",
             "El restaurante ha sido agregado a favoritos", "ACEPTAR", false);
       }
-      refresh();
     });
   }
 

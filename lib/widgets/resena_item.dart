@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 class ResenaItem extends StatelessWidget {
   final String user;
   final String resena;
-  final double calificaion;
+  final int calificaion;
+  final String date;
 
-  ResenaItem(this.user, this.resena, this.calificaion);
+  ResenaItem(this.user, this.resena, this.calificaion, this.date);
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,7 @@ class ResenaItem extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 2.0),
       child: Card(
         child: ListTile(
+          trailing: Text(date),
           title: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Text(
